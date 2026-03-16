@@ -66,25 +66,17 @@ Write the design brief to `docs/forge/P3-design-brief.md`:
 ## Product Identity
 - Type: [SaaS / marketplace / tool / ...]
 - Audience: [developers / enterprises / consumers]
-- Tone: [professional + modern / playful + colorful / ...]
-- Differentiator: [what makes this visually distinct from competitors]
-
-## Brand Direction
-- Primary color preference: [color or "let Stitch decide"]
-- Style references: [e.g., "Vercel's clean design meets GitHub's developer focus"]
-- Must avoid: [e.g., "generic corporate blue", "template aesthetics"]
+- Tone: [2-3 adjectives, e.g., "professional, modern, developer-friendly"]
+- Theme: [dark / light / both]
 
 ## Pages to Generate
-| # | Page | Route | Purpose | Key Elements |
+| # | Page | Route | Purpose | Key Content |
 |---|------|-------|---------|-------------|
-| 1 | Homepage | / | Landing + hero | Hero, CTA, features, categories |
+| 1 | Homepage | / | Landing page | Hero, CTA, categories, featured items |
 | 2 | ... | ... | ... | ... |
-
-## Technical Constraints
-- Framework: [Next.js + Tailwind CSS]
-- Must support: dark mode, responsive (mobile-first), WCAG AA
-- Component library: [shadcn/ui base]
 ```
+
+**Keep the brief SHORT.** It's for Claude's own planning, not for Stitch. Each page's actual Stitch prompt will be crafted individually in Step 4.
 
 ### Step 3: Create Stitch Project
 
@@ -109,44 +101,85 @@ Input: {
 }
 ```
 
-**Prompt Engineering Guidelines — CRITICAL:**
+**Prompt Philosophy — CRITICAL:**
 
-Each prompt MUST include:
-1. **Page purpose** — What this page does, who uses it
-2. **Layout structure** — Header/sidebar/main/footer, grid layout
-3. **Content sections** — Ordered list of what appears on the page
-4. **Interactive elements** — Buttons, forms, tabs, modals
-5. **Data display** — Tables, charts, cards, lists with example data
-6. **Visual style** — Color scheme, typography feel, spacing preference
-7. **States** — Loading, empty, error states if applicable
-8. **Responsive note** — Mobile-first, breakpoint behavior
+Stitch is a professional AI design tool powered by Gemini 2.5 Pro. It makes BETTER design decisions than Claude. Your prompts should act as a **product brief**, NOT a **design specification**.
+
+**DO: Tell Stitch WHAT the product needs (product context)**
+**DON'T: Tell Stitch HOW to design it (visual specifics)**
+
+| Claude provides (WHAT) | Stitch decides (HOW) |
+|------------------------|---------------------|
+| Product name and what it does | Color palette |
+| Target audience | Typography choices |
+| Page content and features | Layout details and spacing |
+| Example/realistic data | Component styling |
+| Brand tone (1-2 words) | Visual hierarchy |
+| Theme preference (dark/light) | Animations and polish |
+
+**Each prompt should include:**
+1. **Product context** — One line: what the product is and who it's for
+2. **Page purpose** — What this specific page does
+3. **Content** — What information appears, with realistic example data
+4. **Tone** — 2-3 adjective (e.g., "professional, developer-focused, modern")
+5. **Theme** — Dark or light preference (optional)
+
+**Do NOT include in prompts:**
+- Specific hex colors (e.g., `#6C3DE8`)
+- Font names (e.g., `Inter`, `JetBrains Mono`)
+- CSS values (e.g., `rounded-lg`, `shadow-md`, `padding: 24px`)
+- Layout grid specifics (e.g., `grid-cols-4`, `max-width: 1200px`)
+- Component implementation details
 
 **Example prompt for a Dashboard page:**
 
 ```
-Design a developer dashboard for an AI agent tool marketplace called "ClawToolkit".
+ClawToolkit — an AI agent tool marketplace for developers.
 
-Style: Dark theme, professional developer aesthetic. Primary color: deep purple (#6C3DE8).
-Clean, spacious layout with subtle borders. Similar feel to Vercel or Linear dashboards.
+Dashboard page showing a developer's tool usage and spending.
 
-Layout:
-- Top navigation bar with logo "ClawToolkit" (left), nav links (center), user avatar (right)
-- Main content area with max-width 1200px, centered
+Content:
+- 4 summary stats: Total API Calls (12,847), Credits Spent (4,230 CP),
+  Credit Balance (15,770 CP), Active API Keys (3)
+- Usage trend chart: daily API calls over last 30 days
+- Table of tools used with columns: Tool Name, Calls, Cost, Avg Latency, Last Used
+  (show 5 rows of realistic data)
 
-Content sections (top to bottom):
-1. Summary cards row (4 cards): "Total Calls: 12,847", "CP Spent: 4,230", "CP Balance: 15,770", "API Keys: 3"
-   - Each card has icon, label, and large number
-2. Usage chart: Line chart showing daily API calls over last 30 days, purple gradient fill
-3. Tool breakdown table: columns [Tool Name, Calls, CP Spent, Avg Latency, Last Used]
-   - Show 5 rows of realistic example data
-   - Sortable column headers
+Tone: professional, developer-focused, modern.
+Dark theme.
+```
 
-Colors: Dark background (#0F172A), card backgrounds (#1E293B), purple accents (#6C3DE8),
-gray text hierarchy (white headings, #94A3B8 body, #64748B secondary)
+**Example prompt for a Homepage:**
 
-Typography: Clean sans-serif (Inter), monospace for numbers/code
+```
+ClawToolkit — an AI agent tool marketplace where developers publish and discover
+tools that AI agents can call through a unified API.
 
-Must include: hover states on cards, active nav item indicator, responsive mobile layout
+Homepage / landing page.
+
+Content:
+- Hero section: headline about "one API key, all tools", call-to-action buttons
+  for "Browse Tools" and "Publish a Tool"
+- Category grid: 12 tool categories (Search & Web, Code Execution, Data & Analytics,
+  Communication, File & Storage, AI & ML, Database, DevOps, Finance, Social & Media,
+  Security, Utilities)
+- Featured tools section: 4-6 tool cards showing name, description, price per call, usage count
+- How it works: 3-step explanation (Discover → Connect → Pay-per-use)
+
+Tone: professional, developer-focused, modern.
+Dark theme.
+```
+
+**Example prompt for Auth page:**
+
+```
+ClawToolkit — AI agent tool marketplace.
+
+Sign in page. Options: GitHub OAuth button (primary) and email/password form.
+Include link to sign up page.
+
+Tone: clean, minimal, developer-friendly.
+Dark theme.
 ```
 
 **Generate ALL pages from the design brief.** For large projects (>8 pages), group into batches:
@@ -289,11 +322,12 @@ If Stitch MCP is unavailable (`forge.config.yaml` providers.design.type = `manua
 
 ## Important Rules
 
-- Claude does NOT design the UI — Stitch generates it, Claude crafts the prompts
+- Claude does NOT design the UI — Stitch generates it, Claude writes product briefs
+- **Never specify colors, fonts, spacing, or CSS in prompts** — let Stitch make all visual decisions
+- Prompts describe WHAT the page contains and WHO it's for, not HOW it should look
+- The only visual guidance allowed: tone adjectives (e.g., "modern") and theme (dark/light)
 - Every page in the PRD MUST have a corresponding Stitch screen
-- Prompt quality is everything — be specific about layout, content, colors, interactions
-- If a generated design is poor, iterate the prompt and regenerate (max 3 attempts per page)
+- If a generated design is poor, adjust the CONTENT description, not add visual constraints
 - HTML output is for REFERENCE only — developers adapt it to React/Next.js, not copy-paste
 - Screenshots are the primary approval artifact — they go in the design spec
-- Dark mode: generate both light and dark variants, or specify dark theme in prompts
 - .forge/design-html/ is gitignored (large files) — only screenshots go to git
