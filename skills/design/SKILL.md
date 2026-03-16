@@ -1,8 +1,10 @@
-# /forge:design — P3 Visual Design System & Page Layouts
+# /forge:design — P3 AI-Generated Design via Stitch
 
 ## Overview
 
-Create a complete visual design system and page-by-page layout specification. This phase runs in parallel with P2 (Architect).
+Generate production-quality UI designs using Google Stitch MCP, then export HTML + screenshots for development reference. Claude's role is to craft precise prompts for Stitch — NOT to design the UI itself.
+
+This phase runs in parallel with P2 (Architect).
 
 ## Usage
 
@@ -13,6 +15,27 @@ Create a complete visual design system and page-by-page layout specification. Th
 ## Prerequisites
 
 - P1 PRD must be approved (`docs/forge/P1-prd.md`)
+- Stitch MCP server configured (see Provider Configuration below)
+
+## Provider Configuration
+
+Default provider: `stitch` (via `@_davideast/stitch-mcp`)
+
+```json
+// Claude Code MCP configuration
+{
+  "mcpServers": {
+    "stitch": {
+      "command": "npx",
+      "args": ["@_davideast/stitch-mcp", "proxy"]
+    }
+  }
+}
+```
+
+**Authentication**: `STITCH_API_KEY` environment variable (obtain from stitch.withgoogle.com)
+
+**Fallback**: If Stitch MCP is unavailable, fall back to `manual_spec` provider (Claude generates a design spec document instead). Check `forge.config.yaml` providers.design.type.
 
 ## Process
 
@@ -23,100 +46,150 @@ Read these files:
 - `docs/forge/P0-brainstorm-report.md` — competitor analysis (for design differentiation)
 - `forge.config.yaml` — design provider configuration
 
-### Step 2: Design Direction Exploration
+### Step 2: Design Brief Preparation
 
-Use `ui-ux-pro-max` skill to explore design directions:
+Before calling Stitch, prepare a structured design brief. This is the MOST IMPORTANT step — Stitch's output quality depends entirely on prompt quality.
 
-1. **Analyze the product type** — Is it a dashboard? A consumer app? A marketplace? A tool?
-2. **Identify the emotional tone** — Professional, playful, minimal, bold, warm, technical?
-3. **Study competitor designs** — What works? What can we do differently?
-4. **Propose 2-3 style directions** with mood descriptions:
-   - Direction A: [description + why it fits]
-   - Direction B: [description + why it fits]
-   - Direction C: [description + why it fits]
-5. **Recommend one** with rationale
+Analyze the PRD and determine:
 
-### Step 3: Design System Definition
+1. **Product type** — SaaS dashboard? Consumer app? Marketplace? Landing page?
+2. **Target audience** — Developers? Enterprises? General consumers?
+3. **Emotional tone** — Professional, playful, minimal, bold, warm, technical?
+4. **Brand direction** — Color preferences, competitor differentiation, visual identity
+5. **Key pages** — Full list from PRD with purpose and priority
 
-Using the chosen direction, define the complete design system:
+Write the design brief to `docs/forge/P3-design-brief.md`:
 
-**Color System:**
-- Primary, Secondary, Accent colors (with hex values)
-- Semantic colors: success, warning, error, info
-- Neutral scale (gray-50 through gray-900)
-- Dark mode variant colors
-- Ensure WCAG AA contrast ratios
+```markdown
+# Design Brief: [Product Name]
 
-**Typography:**
-- Font families (heading + body, from Google Fonts or system fonts)
-- Type scale (text-xs through text-5xl with rem values)
-- Font weights used
-- Line heights
+## Product Identity
+- Type: [SaaS / marketplace / tool / ...]
+- Audience: [developers / enterprises / consumers]
+- Tone: [professional + modern / playful + colorful / ...]
+- Differentiator: [what makes this visually distinct from competitors]
 
-**Spacing & Layout:**
-- Spacing scale (4px base: 1, 2, 3, 4, 6, 8, 12, 16, 24, 32, 48, 64)
-- Grid system (12-column, max-width, gutters)
-- Responsive breakpoints (sm: 640, md: 768, lg: 1024, xl: 1280)
+## Brand Direction
+- Primary color preference: [color or "let Stitch decide"]
+- Style references: [e.g., "Vercel's clean design meets GitHub's developer focus"]
+- Must avoid: [e.g., "generic corporate blue", "template aesthetics"]
 
-**Border & Shadow:**
-- Border radius scale
-- Shadow system (sm, md, lg, xl)
+## Pages to Generate
+| # | Page | Route | Purpose | Key Elements |
+|---|------|-------|---------|-------------|
+| 1 | Homepage | / | Landing + hero | Hero, CTA, features, categories |
+| 2 | ... | ... | ... | ... |
 
-### Step 4: Component Specifications
+## Technical Constraints
+- Framework: [Next.js + Tailwind CSS]
+- Must support: dark mode, responsive (mobile-first), WCAG AA
+- Component library: [shadcn/ui base]
+```
 
-Define core UI components with their variants and states:
+### Step 3: Create Stitch Project
 
-| Component | Variants | States |
-|-----------|----------|--------|
-| Button | primary, secondary, outline, ghost, destructive | default, hover, active, disabled, loading |
-| Input | text, password, textarea, select | default, focus, error, disabled |
-| Card | default, interactive, featured | default, hover |
-| Modal | default, drawer, fullscreen | open, closing |
-| Navigation | top bar, sidebar, bottom (mobile) | expanded, collapsed |
-| Table | default, compact, striped | sortable, selectable |
-| Toast | success, error, warning, info | entering, visible, exiting |
-| Badge | default, outline | various colors |
-| Avatar | image, initials, icon | xs, sm, md, lg |
-| Skeleton | text, card, image | loading |
+Call Stitch MCP to create a project:
 
-For each component, specify:
-- Tailwind CSS class composition
-- Responsive behavior
-- Accessibility attributes (ARIA)
+```
+Tool: create_project
+Input: { "name": "[Product Name] Design" }
+```
 
-### Step 5: Page Layout Design
+Record the `projectId` for subsequent calls.
 
-For every page listed in the PRD, design:
+### Step 4: Generate Screens via Stitch
 
-1. **Layout structure** — Header/sidebar/main/footer arrangement
-2. **Content hierarchy** — What's most important, visual flow
-3. **Key components used** — Which design system components appear
-4. **Responsive behavior** — How it adapts at each breakpoint
-5. **Interactive states** — Loading, empty, error states
-6. **Micro-interactions** — Hover effects, transitions, animations
+For EACH page in the design brief, call Stitch MCP with a carefully crafted prompt:
 
-Use `frontend-design` skill for high-quality component/page descriptions.
+```
+Tool: generate_screen_from_text
+Input: {
+  "projectId": "<project-id>",
+  "prompt": "<detailed page prompt>"
+}
+```
 
-### Step 6: Design Provider Integration (if configured)
+**Prompt Engineering Guidelines — CRITICAL:**
 
-If `forge.config.yaml` design provider is not `manual_spec`:
+Each prompt MUST include:
+1. **Page purpose** — What this page does, who uses it
+2. **Layout structure** — Header/sidebar/main/footer, grid layout
+3. **Content sections** — Ordered list of what appears on the page
+4. **Interactive elements** — Buttons, forms, tabs, modals
+5. **Data display** — Tables, charts, cards, lists with example data
+6. **Visual style** — Color scheme, typography feel, spacing preference
+7. **States** — Loading, empty, error states if applicable
+8. **Responsive note** — Mobile-first, breakpoint behavior
 
-- **Figma**: Use Figma MCP to generate or export design specifications
-- **Stitch**: Use Stitch API to generate design mockups
+**Example prompt for a Dashboard page:**
 
-If `manual_spec` (default): The design spec document IS the deliverable.
+```
+Design a developer dashboard for an AI agent tool marketplace called "ClawToolkit".
 
-### Step 7: Self-Review
+Style: Dark theme, professional developer aesthetic. Primary color: deep purple (#6C3DE8).
+Clean, spacious layout with subtle borders. Similar feel to Vercel or Linear dashboards.
 
-Review the design system for:
-- [ ] Consistency — All components follow the same visual language
-- [ ] Accessibility — WCAG AA compliance, focus states, screen reader support
-- [ ] Responsiveness — Every page works at all breakpoints
-- [ ] Dark mode — All colors have dark mode variants
-- [ ] Component completeness — Every page's needs are covered by the component library
-- [ ] Brand differentiation — Doesn't look like a generic template
+Layout:
+- Top navigation bar with logo "ClawToolkit" (left), nav links (center), user avatar (right)
+- Main content area with max-width 1200px, centered
 
-### Step 8: Write Design Spec
+Content sections (top to bottom):
+1. Summary cards row (4 cards): "Total Calls: 12,847", "CP Spent: 4,230", "CP Balance: 15,770", "API Keys: 3"
+   - Each card has icon, label, and large number
+2. Usage chart: Line chart showing daily API calls over last 30 days, purple gradient fill
+3. Tool breakdown table: columns [Tool Name, Calls, CP Spent, Avg Latency, Last Used]
+   - Show 5 rows of realistic example data
+   - Sortable column headers
+
+Colors: Dark background (#0F172A), card backgrounds (#1E293B), purple accents (#6C3DE8),
+gray text hierarchy (white headings, #94A3B8 body, #64748B secondary)
+
+Typography: Clean sans-serif (Inter), monospace for numbers/code
+
+Must include: hover states on cards, active nav item indicator, responsive mobile layout
+```
+
+**Generate ALL pages from the design brief.** For large projects (>8 pages), group into batches:
+- Batch 1: Core pages (homepage, main feature pages)
+- Batch 2: Auth pages (login, signup)
+- Batch 3: Dashboard pages
+- Batch 4: Secondary pages (settings, docs)
+
+### Step 5: Export HTML + Screenshots
+
+After all screens are generated, export both HTML and screenshots:
+
+**For each screen:**
+
+```
+Tool: get_screen_code
+Input: { "projectId": "<id>", "screenId": "<screen-id>" }
+→ Save HTML to: .forge/design-html/<page-name>.html
+```
+
+```
+Tool: get_screen_image
+Input: { "projectId": "<id>", "screenId": "<screen-id>" }
+→ Save screenshot to: docs/forge/screenshots/<page-name>.png
+```
+
+**Optionally build full site:**
+
+```
+Tool: build_site
+Input: {
+  "projectId": "<id>",
+  "routes": [
+    { "screenId": "<id>", "route": "/" },
+    { "screenId": "<id>", "route": "/dashboard" },
+    ...
+  ]
+}
+```
+
+### Step 6: Generate Design Spec Document
+
+Based on Stitch's generated designs, extract and document the design system:
 
 Write `docs/forge/P3-design-spec.md`:
 
@@ -126,98 +199,101 @@ Write `docs/forge/P3-design-spec.md`:
 > Version: 1.0
 > Date: [date]
 > Status: Pending Approval
-> Based on: P1 PRD
+> Generated by: Google Stitch + Forge
+> Stitch Project ID: [id]
 
-## 1. Design Direction
-### Style: [chosen direction name]
-### Emotional Tone
-### Design Principles
+## 1. Design Overview
+- Style direction (extracted from generated designs)
+- Screenshots of key pages (embedded or linked)
 
-## 2. Color System
-### Primary Palette
-| Name | Light Mode | Dark Mode | Usage |
-### Semantic Colors
-| Name | Color | Usage |
-### Neutral Scale
+## 2. Design System (extracted from Stitch HTML)
+### Colors
+(Extract from generated HTML — primary, secondary, accent, backgrounds, text colors)
+### Typography
+(Extract font families, sizes, weights from HTML)
+### Spacing & Layout
+(Extract grid, padding, margin patterns)
 
-## 3. Typography
-### Font Families
-### Type Scale
-| Name | Size | Weight | Line Height | Usage |
-### Font Pairings
+## 3. Page Designs
+### 3.1 [Page Name]
+- Screenshot: docs/forge/screenshots/<page-name>.png
+- HTML reference: .forge/design-html/<page-name>.html
+- Key design decisions
+- Responsive notes
 
-## 4. Spacing & Layout
-### Spacing Scale
-### Grid System
-### Responsive Breakpoints
-
-## 5. Border & Shadow
-### Border Radius
-### Shadow System
-
-## 6. Component Library
-### Button
-(variants, states, Tailwind classes, accessibility)
-### Input
-...
-### [Each Component]
+### 3.2 [Page Name]
 ...
 
-## 7. Page Designs
-### 7.1 [Page Name]
-#### Layout (ASCII wireframe or description)
-#### Content Hierarchy
-#### Components Used
-#### Responsive Notes
-#### States (loading, empty, error)
+## 4. Development Reference
+- All HTML files: `.forge/design-html/`
+- All screenshots: `docs/forge/screenshots/`
+- Stitch project: [link or ID for future edits]
 
-### 7.2 [Page Name]
-...
-
-## 8. Animation & Transitions
-### Page Transitions
-### Micro-interactions
-### Loading States
-
-## 9. Accessibility Checklist
-- [ ] Color contrast AA compliant
-- [ ] Focus indicators visible
-- [ ] Alt text for images
-- [ ] Keyboard navigation
-- [ ] Screen reader labels
-- [ ] Reduced motion support
-
-## 10. Dark Mode
-### Color Mapping
-### Component Adjustments
-
-## 11. Self-Review Log
+## 5. Implementation Notes
+- Extract Tailwind classes from HTML for component styling
+- Use HTML structure as layout reference, NOT as production code
+- Adapt to React/Next.js component architecture
+- Ensure all interactive states are implemented (hover, focus, disabled)
 ```
 
-### Step 9: Push & Request Approval
+### Step 7: Self-Review
 
-1. Git add, commit, push
-2. Output:
+Review the generated designs for:
+- [ ] All pages from PRD are generated
+- [ ] Visual consistency across pages (same color/font/spacing)
+- [ ] Dark mode present (or prompt Stitch to regenerate with dark theme)
+- [ ] Mobile responsiveness visible in designs
+- [ ] Brand differentiation — doesn't look generic
+- [ ] Key interactive elements are visible (buttons, forms, navigation)
+
+If any page is unsatisfactory, **regenerate it** with an improved prompt.
+
+### Step 8: Push & Request Approval
+
+1. Git add screenshots + design spec (NOT the .forge/design-html/ — too large for git)
+2. Commit and push
+3. Output:
    ```
    🔴 审批门控
 
    请审批设计方案: https://github.com/<org>/<repo>/blob/main/docs/forge/P3-design-spec.md
 
-   回复 "approved" 继续，或提出修改意见。
+   设计截图:
+   - 首页: docs/forge/screenshots/homepage.png
+   - Dashboard: docs/forge/screenshots/dashboard.png
+   - [其他页面...]
+
+   回复 "approved" 继续，或提出修改意见（我会重新生成对应页面）。
    ```
+
+## Fallback: Manual Spec Provider
+
+If Stitch MCP is unavailable (`forge.config.yaml` providers.design.type = `manual_spec`):
+
+1. Skip Steps 3-5
+2. Use `ui-ux-pro-max` skill + `frontend-design` skill to generate a text-based design specification
+3. Define design system (colors, typography, spacing, components) in markdown
+4. Describe page layouts with ASCII wireframes
+5. No HTML or screenshots — the spec document IS the deliverable
 
 ## Skills & Tools Used
 
+**Primary (Stitch provider):**
+- Stitch MCP Server (`@_davideast/stitch-mcp`) — AI design generation
+- `design-reviewer` agent — self-review
+
+**Fallback (manual_spec provider):**
 - `ui-ux-pro-max` — 50+ styles, 21 color palettes, 50+ font pairings
 - `frontend-design` — high-quality UI component design
 - `everything-claude-code:frontend-patterns` — frontend design patterns
-- Figma MCP Server (optional) — design file integration
-- `design-reviewer` agent — self-review
 
-## Important
+## Important Rules
 
-- Design must cover EVERY page listed in the PRD
-- Components must be implementable with Tailwind CSS
-- Dark mode is NOT optional — always include it
-- Mobile-first: design mobile layout first, then scale up
-- Avoid generic "template" aesthetics — create distinctive design
+- Claude does NOT design the UI — Stitch generates it, Claude crafts the prompts
+- Every page in the PRD MUST have a corresponding Stitch screen
+- Prompt quality is everything — be specific about layout, content, colors, interactions
+- If a generated design is poor, iterate the prompt and regenerate (max 3 attempts per page)
+- HTML output is for REFERENCE only — developers adapt it to React/Next.js, not copy-paste
+- Screenshots are the primary approval artifact — they go in the design spec
+- Dark mode: generate both light and dark variants, or specify dark theme in prompts
+- .forge/design-html/ is gitignored (large files) — only screenshots go to git

@@ -123,9 +123,9 @@ Update `templates/forge.config.yaml` to include the new provider as a comment op
 
 | Provider | Status | How It Works |
 |----------|--------|-------------|
-| **Manual Spec** | ✅ Default | Design spec markdown document |
+| **Stitch** | ✅ Default | Google Stitch MCP — AI generates UI, exports HTML + screenshots |
+| Manual Spec | ✅ Fallback | Claude generates design spec markdown (when Stitch unavailable) |
 | Figma | 🔮 Planned | Figma MCP Server |
-| Stitch | 🔮 Planned | Stitch API |
 
 ### Analytics
 

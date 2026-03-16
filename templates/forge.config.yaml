@@ -55,8 +55,10 @@ providers:
       bucket: ""
 
   design:
-    type: "manual_spec"           # manual_spec | figma | stitch
-    config: {}
+    type: "stitch"                # stitch (default) | manual_spec | figma
+    config:
+      mcp_package: "@_davideast/stitch-mcp"   # npm package for MCP proxy
+      # STITCH_API_KEY set in .forge/secrets.yaml or env var
 
   testing:
     type: "playwright"            # playwright | cypress
