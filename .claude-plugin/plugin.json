@@ -1,4 +1,6 @@
 {
+  "name": "forge",
+  "description": "Automated product manufacturing pipeline from idea to deployment",
   "version": "0.1.0",
   "agents": [
     "./agents/prd-reviewer.md",
