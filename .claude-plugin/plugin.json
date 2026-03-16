@@ -1,0 +1,15 @@
+{
+  "version": "0.1.0",
+  "agents": [
+    "./agents/prd-reviewer.md",
+    "./agents/arch-reviewer.md",
+    "./agents/design-reviewer.md",
+    "./agents/verify-checker.md"
+  ],
+  "commands": [
+    "./commands/"
+  ],
+  "skills": [
+    "./skills/"
+  ]
+}
