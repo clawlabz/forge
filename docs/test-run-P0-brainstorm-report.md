@@ -221,24 +221,49 @@ Subscription:  无限调用特定工具，$X/月
 | 原始方向 | 调整后方向 |
 |---------|-----------|
 | 通用 AI AppStore | **OpenClaw 生态工具市场** — 差异化定位 |
-| 纯中心化平台 | **去中心化协议层** — 工具注册上链（ClawNetwork），发现/调用在边缘 |
-| 只有法币支付 | **CLAW token 原生** — 链上结算，智能合约自动分成 |
+| 纯中心化平台 | **中心化平台 (MVP)** — Supabase 数据库，后期可选链上存证 |
+| 纯 CLAW 支付 | **法币为主 + CLAW 为辅** — Stripe 零摩擦入口，CLAW 折扣激励 |
 | 和所有人竞争 | **MCP-native + 多协议适配** — 站在 MCP 标准之上而非之外 |
 | 独立新产品 | **OpenClaw 六大产品联动** — Arena/Market/Genesis 的 Agent 天然成为需求方 |
 
 ### 调整理由
 
-1. **生态联动优势**：ClawArena 的 NPC Agent、ClawMarket 的任务 Agent、ClawGenesis 的文明 Agent 都需要调用工具，这就是天然的需求侧冷启动
-2. **链上结算差异化**：传统平台做不到的链上支付+透明分成+智能合约结算，这是 ClawNetwork 的独特价值
-3. **MCP 兼容而非对抗**：不是要替代 MCP 生态，而是在其之上加商业层和支付层
-4. **避免正面竞争**：不和 Composio ($29M) 或未来 OpenAI 商店正面竞争通用市场，而是做 OpenClaw 生态的垂直工具协议
+1. **生态联动优势**：ClawArena 的 NPC Agent、ClawMarket 的任务 Agent、ClawGenesis 的文明 Agent 都需要调用工具，天然的需求侧冷启动
+2. **MCP 兼容而非对抗**：不替代 MCP 生态，在其之上加商业层和支付层
+3. **避免正面竞争**：不和 Composio ($29M) 或未来 OpenAI 商店正面竞争通用市场，做 OpenClaw 生态的垂直工具市场
+
+### 关键架构决策：不上链 + 法币为主
+
+#### 决策一：MVP 不上链
+
+- 所有成功工具市场 (npm, RapidAPI, Composio) 都是中心化数据库
+- 上链注册增加复杂度/Gas 费/延迟，目标用户 (AI 开发者) 不关心去中心化
+- PostgreSQL + 审计日志在实际效果上等价于链上不可篡改
+- **后期可选**：工具注册哈希锚定到 ClawNetwork 做存证 (v2+)
+
+#### 决策二：三层支付架构
+
+```
+用户支付层:    Stripe 法币 (主) + CLAW/USDC (辅, 享 9 折)
+              ↓
+内部结算层:    CP 积分 (统一计量，隔离汇率波动)
+              ↓
+分成结算层:    法币 (Stripe Connect) 或 CLAW (链上转账)，发布者自选
+```
+
+**CLAW 的角色 — 不是支付门槛，而是激励机制：**
+- CLAW 支付享折扣 (驱动 token 需求)
+- 质押 CLAW 获更高分成比例
+- CLAW 持有者参与工具审核/治理投票
+
+**依据**：纯 Token 支付是已被验证的失败路径 (OpenBazaar 融 $9.25M 后关停)。成功模式是法币为主+crypto为辅 (Ankr, Stripe USDC)。
 
 ### MVP 范围建议
 
 1. **工具注册 & 发现**（Web UI + API）
 2. **MCP 协议适配器**（一键将 MCP Server 发布到市场）
 3. **统一调用代理**（一个 API Key 调用所有工具）
-4. **CP 积分计量计费**（复用已有积分系统）
+4. **CP 积分计量计费**（复用已有积分系统，Stripe 法币入口）
 5. **开发者 Dashboard**（调用统计、收入查看）
 
 ### 命名建议
@@ -249,6 +274,6 @@ Subscription:  无限调用特定工具，$X/月
 
 ---
 
-### 下一步
+### P0 状态：GO (with PIVOT)
 
-如果你同意 PIVOT 方向，我将基于调整后的概念进入 P1 PRD 阶段。如果你倾向保持原始通用方向或有其他修改，请告知。
+方向已确认，进入 P1 PRD 阶段。
