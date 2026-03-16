@@ -67,7 +67,6 @@ Write the design brief to `docs/forge/P3-design-brief.md`:
 - Type: [SaaS / marketplace / tool / ...]
 - Audience: [developers / enterprises / consumers]
 - Tone: [2-3 adjectives, e.g., "professional, modern, developer-friendly"]
-- Theme: [dark / light / both]
 
 ## Pages to Generate
 | # | Page | Route | Purpose | Key Content |
@@ -115,14 +114,14 @@ Stitch is a professional AI design tool powered by Gemini 2.5 Pro. It makes BETT
 | Page content and features | Layout details and spacing |
 | Example/realistic data | Component styling |
 | Brand tone (1-2 words) | Visual hierarchy |
-| Theme preference (dark/light) | Animations and polish |
+| | Theme (dark/light) |
+| | Animations and polish |
 
 **Each prompt should include:**
 1. **Product context** — One line: what the product is and who it's for
 2. **Page purpose** — What this specific page does
 3. **Content** — What information appears, with realistic example data
-4. **Tone** — 2-3 adjective (e.g., "professional, developer-focused, modern")
-5. **Theme** — Dark or light preference (optional)
+4. **Tone** — 2-3 adjectives (e.g., "professional, developer-focused, modern")
 
 **Do NOT include in prompts:**
 - Specific hex colors (e.g., `#6C3DE8`)
@@ -130,6 +129,7 @@ Stitch is a professional AI design tool powered by Gemini 2.5 Pro. It makes BETT
 - CSS values (e.g., `rounded-lg`, `shadow-md`, `padding: 24px`)
 - Layout grid specifics (e.g., `grid-cols-4`, `max-width: 1200px`)
 - Component implementation details
+- Theme preference (dark/light) — let Stitch decide
 
 **Example prompt for a Dashboard page:**
 
@@ -146,7 +146,6 @@ Content:
   (show 5 rows of realistic data)
 
 Tone: professional, developer-focused, modern.
-Dark theme.
 ```
 
 **Example prompt for a Homepage:**
@@ -167,7 +166,6 @@ Content:
 - How it works: 3-step explanation (Discover → Connect → Pay-per-use)
 
 Tone: professional, developer-focused, modern.
-Dark theme.
 ```
 
 **Example prompt for Auth page:**
@@ -179,7 +177,6 @@ Sign in page. Options: GitHub OAuth button (primary) and email/password form.
 Include link to sign up page.
 
 Tone: clean, minimal, developer-friendly.
-Dark theme.
 ```
 
 **Generate ALL pages from the design brief.** For large projects (>8 pages), group into batches:
@@ -325,7 +322,7 @@ If Stitch MCP is unavailable (`forge.config.yaml` providers.design.type = `manua
 - Claude does NOT design the UI — Stitch generates it, Claude writes product briefs
 - **Never specify colors, fonts, spacing, or CSS in prompts** — let Stitch make all visual decisions
 - Prompts describe WHAT the page contains and WHO it's for, not HOW it should look
-- The only visual guidance allowed: tone adjectives (e.g., "modern") and theme (dark/light)
+- The only visual guidance allowed: tone adjectives (e.g., "modern")
 - Every page in the PRD MUST have a corresponding Stitch screen
 - If a generated design is poor, adjust the CONTENT description, not add visual constraints
 - HTML output is for REFERENCE only — developers adapt it to React/Next.js, not copy-paste
