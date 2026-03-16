@@ -92,15 +92,35 @@ For each task (or parallel group of tasks):
 - `supabase-postgres-best-practices` — for database operations
 - `security-review` — for auth, input handling, API endpoints
 
-**For parallel execution:**
+**Parallel Execution Policy:**
+
+Before executing tasks in a phase, evaluate the task list:
+
+| Condition | Action |
+|-----------|--------|
+| ≥ 3 independent tasks with no shared files | **MUST** use Agent tool to launch parallel agents |
+| 2 independent tasks with no shared files | **SHOULD** use Agent tool to launch parallel agents |
+| ≤ 1 independent task or tasks share files | Execute sequentially in main conversation |
+
+"Independent" means two tasks do NOT write to the same file or directory.
+
+When launching parallel agents, use this pattern:
 ```
-Launch multiple Agents simultaneously:
-- Agent 1: Implement [Task A] — operates on src/features/featureA/
-- Agent 2: Implement [Task B] — operates on src/features/featureB/
-- Agent 3: Implement [Task C] — operates on src/features/featureC/
+Use the Agent tool to launch N agents in a single message:
+- Agent 1: "[Task description]" — operates on [specific files/dirs]
+- Agent 2: "[Task description]" — operates on [specific files/dirs]
+- Agent 3: "[Task description]" — operates on [specific files/dirs]
 ```
 
-**Critical rule for parallel tasks:** Each parallel agent must work on DIFFERENT files/directories to avoid conflicts.
+Each agent prompt MUST include:
+1. The full context needed (what to build, which files to read for reference)
+2. The specific files/directories it owns (no overlap with other agents)
+3. The coding standards to follow (from design spec + architecture doc)
+
+**Critical rules for parallel agents:**
+- Each agent MUST work on DIFFERENT files/directories — zero overlap
+- NEVER write implementation code directly in the main conversation when agents should be used
+- Wait for ALL agents to complete before running the phase checkpoint
 
 #### 4c. Update Progress
 
