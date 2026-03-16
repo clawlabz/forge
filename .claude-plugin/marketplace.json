@@ -1,0 +1,27 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "forge",
+  "description": "Forge — Automated product manufacturing pipeline from idea to deployment",
+  "owner": {
+    "name": "ClawLabz",
+    "email": "dev@clawlabz.xyz"
+  },
+  "plugins": [
+    {
+      "name": "forge",
+      "source": "./",
+      "description": "Full pipeline: brainstorm → PRD → architecture → design → develop → test → verify → deploy",
+      "version": "0.1.0",
+      "author": {
+        "name": "ClawLabz",
+        "email": "dev@clawlabz.xyz"
+      },
+      "homepage": "https://github.com/clawlabz/forge",
+      "repository": "https://github.com/clawlabz/forge",
+      "license": "MIT",
+      "category": "workflow",
+      "tags": ["automation", "product", "pipeline", "deployment", "forge"],
+      "strict": false
+    }
+  ]
+}
