@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Environment & Secrets
+.env
+.env.local
+.env.production
+.env.staging
+*.key
+*.pem
+.forge/secrets.yaml
+
+# Sensitive project files
+project-info.md
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build
+.next/
+.turbo/
+dist/
+out/
+.vercel/
+
+# Temp
+.tmp-*/
+*.log
+
+# Rust
+target/
