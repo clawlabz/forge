@@ -1,0 +1,87 @@
+version: "1.0"
+
+# ---- Project Info (auto-filled after P0) ----
+project:
+  name: ""
+  description: ""
+  domain: ""
+
+# ---- Model Routing ----
+# Each phase can use a different model. If the platform doesn't support
+# switching, the "fallback" model is used (default: current session model).
+models:
+  brainstorm: "opus"
+  prd: "opus"
+  architect: "opus"
+  design: "sonnet"
+  develop: "sonnet"
+  test: "sonnet"
+  verify: "opus"
+  deploy: "haiku"
+  fallback: "current"
+
+# ---- Providers ----
+# Each provider has a "type" and optional "strategy" for MCP/script fallback.
+# type: which service to use
+# strategy: "mcp_first" (try MCP, fallback to script) | "script_first" | "mcp_only" | "script_only"
+providers:
+  doc_hosting:
+    type: "github"               # github | notion | cloudflare_pages
+    config:
+      repo: ""                    # auto-detect from git remote, or set manually
+      branch: "main"
+
+  deployment:
+    type: "vercel"                # vercel | cloudflare_pages | netlify
+    strategy: "mcp_first"
+    config:
+      team: ""
+
+  database:
+    type: "supabase"              # supabase | planetscale | neon
+    strategy: "script_first"
+    config:
+      project_ref: ""
+
+  dns:
+    type: "cloudflare"            # cloudflare | vercel_dns | route53
+    strategy: "mcp_first"
+    config:
+      zone: ""
+
+  storage:
+    type: "cloudflare_r2"         # cloudflare_r2 | s3 | supabase_storage
+    config:
+      bucket: ""
+
+  design:
+    type: "manual_spec"           # manual_spec | figma | stitch
+    config: {}
+
+  testing:
+    type: "playwright"            # playwright | cypress
+    config: {}
+
+# ---- Optional Features ----
+optional:
+  analytics:
+    ga4:
+      enabled: true
+      measurement_id: ""          # leave empty to skip
+    clarity:
+      enabled: true
+      project_id: ""              # leave empty to skip
+  knowledge_base:
+    enabled: true
+
+# ---- Approval Gates ----
+approval:
+  method: "github"                # github | interactive | notion
+  gates:
+    - prd
+    - architect
+    - design
+
+# ---- Preset ----
+# Use "forge init --preset claw" to auto-fill with ClawLabz defaults.
+preset: null                      # "claw" | "generic" | custom file path

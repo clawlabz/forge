@@ -1,0 +1,54 @@
+# Generic preset — all values empty, configure interactively
+# Usage: /forge:init --preset generic
+
+project:
+  domain_suffix: ""
+
+providers:
+  doc_hosting:
+    type: "github"
+    config:
+      repo: ""
+      branch: "main"
+
+  deployment:
+    type: "vercel"
+    strategy: "mcp_first"
+    config:
+      team: ""
+
+  database:
+    type: "supabase"
+    strategy: "script_first"
+    config:
+      project_ref: ""
+
+  dns:
+    type: "cloudflare"
+    strategy: "mcp_first"
+    config:
+      zone: ""
+
+  storage:
+    type: "cloudflare_r2"
+    config:
+      bucket: ""
+
+  design:
+    type: "manual_spec"
+    config: {}
+
+  testing:
+    type: "playwright"
+    config: {}
+
+optional:
+  analytics:
+    ga4:
+      enabled: false
+      measurement_id: ""
+    clarity:
+      enabled: false
+      project_id: ""
+  knowledge_base:
+    enabled: true

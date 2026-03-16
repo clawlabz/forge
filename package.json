@@ -1,0 +1,21 @@
+{
+  "name": "@clawlabz/forge",
+  "version": "0.1.0",
+  "description": "Forge — Automated product manufacturing pipeline from idea to deployment",
+  "keywords": [
+    "claude-code",
+    "plugin",
+    "automation",
+    "product",
+    "workflow",
+    "pipeline",
+    "deployment"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/clawlabz/forge"
+  },
+  "license": "MIT",
+  "author": "ClawLabz",
+  "homepage": "https://github.com/clawlabz/forge#readme"
+}

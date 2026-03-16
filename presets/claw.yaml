@@ -1,0 +1,51 @@
+# ClawLabz ecosystem preset
+# Usage: /forge:init --preset claw
+
+project:
+  domain_suffix: "clawlabz.xyz"
+
+providers:
+  doc_hosting:
+    type: "github"
+    config:
+      branch: "main"
+
+  deployment:
+    type: "vercel"
+    strategy: "mcp_first"
+    config:
+      team: ""
+
+  database:
+    type: "supabase"
+    strategy: "script_first"
+    config:
+      project_ref: ""
+
+  dns:
+    type: "cloudflare"
+    strategy: "mcp_first"
+    config:
+      zone: "clawlabz.xyz"
+
+  storage:
+    type: "cloudflare_r2"
+    config:
+      bucket: ""
+
+  design:
+    type: "manual_spec"
+
+  testing:
+    type: "playwright"
+
+optional:
+  analytics:
+    ga4:
+      enabled: true
+      measurement_id: ""
+    clarity:
+      enabled: true
+      project_id: ""
+  knowledge_base:
+    enabled: true
