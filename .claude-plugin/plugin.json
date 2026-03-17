@@ -1,7 +1,7 @@
 {
   "name": "forge",
   "description": "Automated product manufacturing pipeline from idea to deployment",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "author": {
     "name": "ClawLabz",
     "url": "https://github.com/clawlabz"
