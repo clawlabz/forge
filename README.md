@@ -2,16 +2,18 @@
 
 **From idea to deployed product, fully automated.**
 
-Forge is a Claude Code plugin that automates the entire product manufacturing pipeline — from initial brainstorming through development, testing, and deployment. Give it an idea, and it delivers a live, production-ready product.
+Forge is a Claude Code plugin that automates the entire product manufacturing pipeline — from brainstorming through development, testing, and deployment. Give it an idea, and it delivers a live, production-ready product.
 
 ## Pipeline
 
 ```
-Idea → P0 Brainstorm → P1 PRD 🔴 → P2 Architect 🔴 → P4 Develop → P5 Test
-                                    P3 Design    🔴 ↗
-       → P6 Verify (×3) → P7 Deploy → ✅ Live Product
+Idea → P0 Brainstorm → P1 PRD 🔴 → ┌ P2 Architect (agent) 🔴 ┐
+                                     │ P3 Design (Stitch)  🔴 │
+                                     └────────────────────────┘
+→ P4 Develop ⚡→ P5 Test ⚡→ P6 Verify ×3 ⚡→ P7 Deploy ⚡→ ✅ Live Product
 
-🔴 = Approval gate (pushes doc to GitHub, waits for human review)
+🔴 = Approval gate (pushes to GitHub, waits for human review)
+⚡ = Fully automatic, no pause
 ```
 
 | Phase | Command | What It Does |
@@ -19,9 +21,9 @@ Idea → P0 Brainstorm → P1 PRD 🔴 → P2 Architect 🔴 → P4 Develop → 
 | P0 | `/forge:brainstorm` | Market research, competitor analysis, feasibility, business model |
 | P1 | `/forge:prd` | PRD with 2 rounds of self-review |
 | P2 | `/forge:architect` | Tech architecture + dev plan with security/performance review |
-| P3 | `/forge:design` | Design system, component specs, page layouts |
+| P3 | `/forge:design` | UI design generation via Google Stitch MCP |
 | P4 | `/forge:develop` | Multi-agent parallel development with checkpoints |
-| P5 | `/forge:test` | Unit, integration, E2E tests with browser screenshots |
+| P5 | `/forge:test` | Unit, integration, E2E tests |
 | P6 | `/forge:verify` | 3-round multi-perspective verification |
 | P7 | `/forge:deploy` | Git, database, hosting, DNS, analytics, knowledge base |
 
@@ -30,13 +32,17 @@ Idea → P0 Brainstorm → P1 PRD 🔴 → P2 Architect 🔴 → P4 Develop → 
 ### Install
 
 ```bash
-claude plugin add clawlabz/forge
+# Add Forge marketplace
+claude plugin marketplace add clawlabz/forge
+
+# Install plugin
+claude plugin install forge
 ```
 
 ### One-Command Full Pipeline
 
 ```bash
-/forge "A real-time collaborative whiteboard for remote teams"
+/forge:build "A real-time collaborative whiteboard for remote teams"
 ```
 
 ### Step by Step
@@ -46,7 +52,7 @@ claude plugin add clawlabz/forge
 /forge:brainstorm "your idea"      # P0: Research & validate
 /forge:prd                         # P1: Write PRD (approval required)
 /forge:architect                   # P2: Architecture (approval required)
-/forge:design                      # P3: Design (approval required)
+/forge:design                      # P3: Design via Stitch (approval required)
 /forge:develop                     # P4: Build it
 /forge:test                        # P5: Test it
 /forge:verify                      # P6: 3-round review
@@ -58,6 +64,31 @@ claude plugin add clawlabz/forge
 ```bash
 /forge:resume                      # Pick up from last checkpoint
 ```
+
+## Design Generation (Google Stitch)
+
+Forge uses [Google Stitch](https://stitch.withgoogle.com) as the default design provider. Claude writes product briefs, Stitch generates professional UI designs.
+
+**How it works:**
+1. Claude reads the PRD and crafts page-by-page prompts (product context only, no visual specs)
+2. Stitch generates each page's UI design using Gemini
+3. Homepage is generated first to establish the visual style
+4. Subsequent pages maintain consistency via style reference prompts
+5. Screenshots are downloaded and embedded in the design spec for approval
+6. HTML code is saved locally for development reference
+
+**Setup:**
+```bash
+# Install Stitch MCP dependencies
+pip install mcp requests  # requires Python 3.10+
+
+# Add Stitch MCP server to Claude Code
+claude mcp add stitch -e STITCH_API_KEY=<your-key> -- python3 /path/to/stitch_mcp.py
+```
+
+Get your API key at [stitch.withgoogle.com](https://stitch.withgoogle.com).
+
+**Fallback:** If Stitch is unavailable, Forge falls back to Claude-generated design specifications.
 
 ## Configuration
 
@@ -73,22 +104,23 @@ project:
 
 # Route different LLMs to different phases
 models:
-  brainstorm: "opus"      # Deep reasoning
-  prd: "opus"
-  architect: "opus"
-  design: "sonnet"        # Or gemini-pro for design-focused models
-  develop: "sonnet"       # Best coding model
-  test: "sonnet"
-  verify: "opus"          # Deep audit
-  deploy: "haiku"         # Fast execution
-  fallback: "current"     # When platform doesn't support switching
+  brainstorm: "opus"       # Deep reasoning for research
+  prd: "opus"              # Deep reasoning for requirements
+  architect: "opus"        # Deep reasoning for architecture
+  design: "sonnet"         # Design prompt crafting
+  develop: "sonnet"        # Code generation
+  test: "sonnet"           # Test writing
+  verify: "opus"           # Deep audit
+  deploy: "haiku"          # Fast execution tasks
+  fallback: "current"      # When platform doesn't support model switching
 
 # Pluggable providers — swap any service
 providers:
-  deployment: { type: "vercel" }       # vercel | cloudflare_pages | netlify
-  database:   { type: "supabase" }     # supabase | planetscale | neon
-  dns:        { type: "cloudflare" }   # cloudflare | vercel_dns | route53
-  design:     { type: "manual_spec" }  # manual_spec | figma | stitch
+  deployment: { type: "vercel" }        # vercel | cloudflare_pages | netlify
+  database:   { type: "supabase" }      # supabase | planetscale | neon
+  dns:        { type: "cloudflare" }    # cloudflare | vercel_dns | route53
+  design:     { type: "stitch" }        # stitch (default) | manual_spec | figma
+  storage:    { type: "cloudflare_r2" } # cloudflare_r2 | s3 | supabase_storage
 
 # Optional features
 optional:
@@ -101,7 +133,7 @@ optional:
 ### Presets
 
 ```bash
-/forge:init --preset claw           # ClawLabz ecosystem (Vercel + Supabase + Cloudflare)
+/forge:init --preset claw           # ClawLabz ecosystem defaults
 /forge:init --preset generic        # Empty config, configure manually
 ```
 
@@ -111,44 +143,40 @@ Every integration point is a pluggable provider:
 
 | Concern | Default | Alternatives |
 |---------|---------|-------------|
-| Doc Hosting | GitHub | Notion, Cloudflare Pages |
+| Design | **Stitch** (Google AI) | Manual Spec, Figma MCP |
 | Deployment | Vercel | Cloudflare Pages, Netlify |
 | Database | Supabase | PlanetScale, Neon |
 | DNS | Cloudflare | Vercel DNS, Route53 |
 | Storage | Cloudflare R2 | S3, Supabase Storage |
-| Design | Manual Spec | Figma MCP, Stitch |
+| Doc Hosting | GitHub | Notion, Cloudflare Pages |
 | Testing | Playwright | Cypress |
 | Analytics | GA4 + Clarity | — |
 
 Providers use a dual-layer strategy: MCP server first, script fallback.
 
+## Approval Flow
+
+Three gates pause the pipeline and push documents to GitHub:
+
+```
+🔴 审批门控 — P1 PRD
+请审批 PRD: https://github.com/org/project/blob/main/docs/forge/P1-prd.md
+
+🔴 审批门控 — P2 Architecture
+请审批技术架构: https://github.com/org/project/blob/main/docs/forge/P2-architecture.md
+
+🔴 审批门控 — P3 Design
+请审批设计方案: https://github.com/org/project/blob/main/docs/forge/P3-design-spec.md
+(包含每个页面的截图，可直接在 GitHub 上查看)
+```
+
+Review on any device. Reply "approved" or provide revision feedback.
+
+After P3 approval, P4→P5→P6→P7 runs fully automatically with zero human intervention.
+
 ## State & Resume
 
 Forge tracks pipeline state in `.forge/state.yaml`. Every phase transition, approval, and sub-task completion is persisted. If your session is interrupted, `/forge:resume` reads the state file and continues from exactly where it stopped.
-
-## Approval Flow
-
-Three approval gates pause the pipeline and push the document to GitHub:
-
-```
-📋 请审批 PRD: https://github.com/org/project/blob/main/docs/forge/P1-prd.md
-```
-
-Review on any device (phone, tablet, desktop). Reply with approval or revision requests to continue.
-
-## Skills & Tools Used
-
-Forge orchestrates 20+ skills and agents across the pipeline:
-
-- **Research**: agent-reach, market-research, search-first
-- **Planning**: brainstorming, blueprint, writing-plans
-- **Architecture**: architect agent, api-design, backend-patterns, database-migrations
-- **Design**: ui-ux-pro-max, frontend-design, frontend-patterns, Figma MCP
-- **Development**: tdd-guide, code-reviewer, build-error-resolver, fullstack-guardian, vercel-react-best-practices
-- **Testing**: e2e-runner, browser-use, webapp-testing, javascript-testing-patterns
-- **Security**: security-review, security-scan
-- **Deployment**: devops, deployment-patterns, Vercel/Supabase/Cloudflare MCP servers
-- **Analytics**: ga4-clarity-auto-integration
 
 ## Deliverables
 
@@ -156,9 +184,19 @@ When the pipeline completes, you get:
 
 1. **Live product** at your configured domain
 2. **Git repository** with clean commit history
-3. **Documentation** in `docs/forge/` (PRD, architecture, design, test reports, deploy report)
-4. **Knowledge base** in `knowledge/` (architecture overview, API reference, onboarding guide)
+3. **Documentation** in `docs/forge/` — PRD, architecture, design spec (with screenshots), test reports, verification reports, deploy report
+4. **Knowledge base** in `knowledge/` — architecture overview, API reference, database schema, onboarding guide
 5. **Project summary** — complete handoff document with all links and status
+
+## Tested Products
+
+Built with Forge during development:
+
+| Product | Stack | Result |
+|---------|-------|--------|
+| [ClawToolkit](https://toolkit.clawlabz.xyz) | Next.js + Supabase + Stripe | 28 routes, 40 files |
+| [ClawMark](https://mark.clawlabz.xyz) | Next.js + localStorage | 12 pages, 42 files |
+| ClawHealth | Next.js + Supabase + DeepSeek | 12 pages, 93 files |
 
 ## License
 
