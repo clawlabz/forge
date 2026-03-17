@@ -20,6 +20,12 @@ Generate a professional, comprehensive PRD based on the P0 brainstorm report. Th
 - P0 brainstorm report must exist at `docs/forge/P0-brainstorm-report.md`
 - P0 recommendation must be GO (or PIVOT with accepted modifications)
 
+## HARD RULE: Execution Order
+
+Steps MUST execute in strict order: Draft → Self-Review Round 1 → Incorporate fixes → Self-Review Round 2 → Incorporate fixes → Finalize → Push → Request Approval.
+
+**NEVER push to GitHub or request approval BEFORE both self-review rounds are completed and incorporated.** The user must receive the FINAL version (after all self-review fixes), not the draft.
+
 ## Process
 
 ### Step 1: Read Context

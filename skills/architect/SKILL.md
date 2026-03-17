@@ -19,6 +19,12 @@ Produce a production-grade technical architecture document and a checklist-based
 
 - P1 PRD must be approved (`docs/forge/P1-prd.md`)
 
+## HARD RULE: Execution Order
+
+Steps MUST execute in strict order: Design architecture → Write dev plan → Self-Review Round 1 (security) → Incorporate fixes → Self-Review Round 2 (performance) → Incorporate fixes → Finalize → Push → Request Approval.
+
+**NEVER push to GitHub or request approval BEFORE both self-review rounds are completed and incorporated.**
+
 ## Process
 
 ### Step 1: Read Context
