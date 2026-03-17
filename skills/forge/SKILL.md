@@ -47,7 +47,10 @@ INPUT: idea string
 │  └─ On rejection → re-run with feedback
 │
 ├─ Step 4: P2 Architect (can use Agent)
-│  └─ Launch /forge:architect as Agent (sub-agents OK, no MCP needed)
+│  └─ Launch as Agent (subagent_type="general-purpose") with prompt:
+│     "Read skills/architect/SKILL.md, then execute the architecture phase for this project."
+│     NOTE: Do NOT use "forge:architect" as agent type — it's a skill, not an agent.
+│     Use "general-purpose" or "everything-claude-code:architect" as subagent_type.
 │  └─ 🔴 APPROVAL GATE (P2): output architecture link, wait
 │  └─ On approval → continue
 │
@@ -132,6 +135,15 @@ In P4, independent development tasks within the same phase are parallelized via 
 
 In P6, multiple review dimensions run as parallel Agents.
 
+## Agent Type Rules
+
+When using the Agent tool to delegate work:
+- Use `subagent_type="general-purpose"` for most tasks
+- Or use `subagent_type="everything-claude-code:architect"` for architecture work
+- **NEVER use forge skill/command names as agent types** (e.g., "forge:architect" is NOT a valid agent type)
+- Forge skills (`forge:arch-reviewer`, `forge:prd-reviewer`, `forge:design-reviewer`, `forge:verify-checker`) ARE valid agent types
+- Pass the skill content as context in the agent prompt, e.g.: "Read skills/architect/SKILL.md and execute..."
+
 ## Important Rules
 
 - NEVER skip an approval gate
@@ -139,3 +151,4 @@ In P6, multiple review dimensions run as parallel Agents.
 - ALWAYS push documents to GitHub before requesting approval
 - If state.yaml exists when /forge is called, ALWAYS resume (don't restart)
 - Each phase skill is responsible for its own output documents
+- NEVER call Stitch MCP tools from a sub-agent — always in main conversation
