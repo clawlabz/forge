@@ -66,17 +66,20 @@ INPUT: idea string
 │  └─ Reads P2 dev plan + P3 design spec
 │  └─ Executes phase by phase with checkpoints
 │  └─ Update state after each sub-phase
+│  └─ ⚡ NO APPROVAL — automatically continue to P5
 │
-├─ Step 6: P5 Test
+├─ Step 6: P5 Test (AUTO — no approval, no pause)
 │  └─ Invoke /forge:test
 │  └─ Run full test suite
 │  └─ Auto-fix failures and retest
+│  └─ ⚡ NO APPROVAL — automatically continue to P6
 │
-├─ Step 7: P6 Verify (3 rounds)
+├─ Step 7: P6 Verify 3 rounds (AUTO — no approval, no pause)
 │  └─ Invoke /forge:verify
 │  └─ 3 rounds of multi-agent review + fix
+│  └─ ⚡ NO APPROVAL — automatically continue to P7
 │
-├─ Step 8: P7 Deploy
+├─ Step 8: P7 Deploy (AUTO — no approval, no pause)
 │  └─ Invoke /forge:deploy
 │  └─ Git push, DB migrate, deploy, DNS, analytics, knowledge base
 │  └─ Output final project summary
@@ -147,9 +150,14 @@ When using the Agent tool to delegate work:
 
 ## Important Rules
 
-- NEVER skip an approval gate
+- NEVER skip an approval gate (P1, P2, P3 only)
+- NEVER skip P5 Test or P6 Verify — these are MANDATORY, not optional
+- NEVER pause or ask the user between P4→P5→P6→P7 — these run automatically without interruption
+- NEVER ask "shall I proceed?" or "would you prefer?" after P4 — just continue
 - ALWAYS update state.yaml before and after each phase
 - ALWAYS push documents to GitHub before requesting approval
 - If state.yaml exists when /forge is called, ALWAYS resume (don't restart)
 - Each phase skill is responsible for its own output documents
 - NEVER call Stitch MCP tools from a sub-agent — always in main conversation
+
+**The ONLY approval points are P1 PRD, P2 Architecture, and P3 Design. Everything else runs automatically.**
