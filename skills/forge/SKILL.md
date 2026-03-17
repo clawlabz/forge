@@ -46,19 +46,20 @@ INPUT: idea string
 │  └─ On approval → update state, continue
 │  └─ On rejection → re-run with feedback
 │
-├─ Step 4: P2 Architect (can use Agent)
-│  └─ Launch as Agent (subagent_type="general-purpose") with prompt:
-│     "Read skills/architect/SKILL.md, then execute the architecture phase for this project."
-│     NOTE: Do NOT use "forge:architect" as agent type — it's a skill, not an agent.
-│     Use "general-purpose" or "everything-claude-code:architect" as subagent_type.
-│  └─ 🔴 APPROVAL GATE (P2): output architecture link, wait
-│  └─ On approval → continue
+├─ Step 4: P2 + P3 in Parallel (mixed execution)
+│  ├─ Launch P2 Architect as background Agent (subagent_type="general-purpose"):
+│  │   "Read skills/architect/SKILL.md, then execute the architecture phase."
+│  │   NOTE: Use "general-purpose" or "everything-claude-code:architect", NOT "forge:architect"
+│  │
+│  └─ Simultaneously, execute P3 Design INLINE in main conversation:
+│     Call Stitch MCP tools directly: create_project, generate_screen_from_text, etc.
+│     (MCP tools require main conversation permissions, cannot run in sub-agent)
 │
-├─ Step 4b: P3 Design (MUST run in main conversation)
-│  └─ Execute /forge:design DIRECTLY (NOT as Agent — Stitch MCP requires main conversation)
-│  └─ Call Stitch MCP tools inline: create_project, generate_screen_from_text, etc.
-│  └─ 🔴 APPROVAL GATE (P3): output design link, wait
-│  └─ On approval → continue
+│  └─ Wait for both to complete
+│  └─ 🔴 APPROVAL GATE: output BOTH links together, wait for approval
+│     - Architecture: https://github.com/<org>/<repo>/blob/main/docs/forge/P2-architecture.md
+│     - Design: https://github.com/<org>/<repo>/blob/main/docs/forge/P3-design-spec.md
+│  └─ Both approved → continue to P4
 │
 ├─ Step 5: P4 Develop
 │  └─ Invoke /forge:develop
@@ -125,11 +126,11 @@ If any phase fails:
 
 ## Parallel Execution
 
-**P2 Architect**: CAN be launched as a sub-agent (no MCP tools needed).
-
-**P3 Design**: MUST run in the main conversation (Stitch MCP requires main conversation permissions). Do NOT launch P3 as a sub-agent.
-
-**P2 and P3 are sequential**, not parallel, due to this MCP constraint. P2 runs first (as agent), then P3 runs inline.
+**P2 + P3 run in parallel** with mixed execution:
+- **P2 Architect**: Launched as a **background sub-agent** (no MCP needed)
+- **P3 Design**: Executed **inline in main conversation** (Stitch MCP requires main session)
+- Both run simultaneously — P2 in background agent, P3 in foreground
+- Wait for both to complete, then present both for approval together
 
 In P4, independent development tasks within the same phase are parallelized via multiple Agent invocations.
 
