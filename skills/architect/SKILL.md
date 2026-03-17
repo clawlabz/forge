@@ -1,3 +1,8 @@
+---
+name: architect
+description: "P2 technical architecture and development plan with security/performance review"
+---
+
 # /forge:architect — P2 Technical Architecture & Dev Plan
 
 ## Overview

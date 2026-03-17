@@ -1,3 +1,8 @@
+---
+name: prd
+description: "P1 PRD generation with 2-round self-review and approval gate"
+---
+
 # /forge:prd — P1 Product Requirements Document
 
 ## Overview

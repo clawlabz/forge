@@ -1,3 +1,8 @@
+---
+name: resume
+description: "Resume interrupted Forge pipeline from last checkpoint via state file"
+---
+
 # /forge:resume — Resume Interrupted Forge Pipeline
 
 ## Overview

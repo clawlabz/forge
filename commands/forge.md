@@ -1,3 +1,7 @@
+---
+description: Run the full Forge pipeline from idea to deployed product
+---
+
 # /forge — Full Pipeline Orchestrator
 
 Run the complete Forge pipeline from idea to deployed product.

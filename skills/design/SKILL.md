@@ -1,3 +1,8 @@
+---
+name: design
+description: "P3 UI design generation via Google Stitch MCP with prompt engineering"
+---
+
 # /forge:design — P3 AI-Generated Design via Stitch
 
 ## Overview

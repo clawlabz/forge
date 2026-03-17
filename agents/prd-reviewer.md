@@ -1,3 +1,8 @@
+---
+name: prd-reviewer
+description: Review PRD from product manager and user perspectives
+---
+
 # PRD Reviewer Agent
 
 ## Role

@@ -1,3 +1,8 @@
+---
+name: arch-reviewer
+description: Review architecture from security and performance perspectives
+---
+
 # Architecture Reviewer Agent
 
 ## Role

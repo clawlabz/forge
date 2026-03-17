@@ -1,3 +1,7 @@
+---
+description: Initialize a new Forge project with config and state files
+---
+
 # /forge:init — Initialize Forge Project
 
 Initialize a new project with Forge pipeline structure, configuration, and state tracking.

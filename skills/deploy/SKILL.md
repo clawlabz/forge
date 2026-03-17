@@ -1,3 +1,8 @@
+---
+name: deploy
+description: "P7 automated deployment: git, database, hosting, DNS, analytics, knowledge base"
+---
+
 # /forge:deploy — P7 Automated Deployment & Delivery
 
 ## Overview

@@ -1,3 +1,8 @@
+---
+name: forge
+description: "Main orchestrator — runs full P0-P7 pipeline with approval gates"
+---
+
 # /forge — Main Orchestrator
 
 ## Overview

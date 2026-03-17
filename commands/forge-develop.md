@@ -1,3 +1,7 @@
+---
+description: "P4: Multi-agent parallel development with checkpoints"
+---
+
 # /forge:develop — P4 Multi-Agent Development
 
 Execute the development plan with multi-agent parallel development and checkpoints.

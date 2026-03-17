@@ -1,3 +1,8 @@
+---
+name: init
+description: "Initialize Forge project with directory structure, config, and state"
+---
+
 # /forge:init — Initialize Forge Project
 
 ## Overview

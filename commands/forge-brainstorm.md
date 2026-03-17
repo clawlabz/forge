@@ -1,3 +1,7 @@
+---
+description: "P0: Market research, competitor analysis, feasibility validation"
+---
+
 # /forge:brainstorm — P0 Brainstorm & Validation
 
 Transform a product idea into a validated concept through market research, competitor analysis, and business model validation.

@@ -1,3 +1,7 @@
+---
+description: "P2: Technical architecture and development plan"
+---
+
 # /forge:architect — P2 Technical Architecture
 
 Design technical architecture and development plan with security/performance self-review.

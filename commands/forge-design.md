@@ -1,3 +1,7 @@
+---
+description: "P3: Generate UI designs via Google Stitch MCP"
+---
+
 # /forge:design — P3 Visual Design System
 
 Create design system specification with component library and page layouts.

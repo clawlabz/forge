@@ -1,3 +1,7 @@
+---
+description: "P7: Automated deployment (git, DB, hosting, DNS)"
+---
+
 # /forge:deploy — P7 Automated Deployment
 
 Full automated deployment: git push, database migration, hosting, DNS, analytics, knowledge base.

@@ -1,3 +1,8 @@
+---
+name: develop
+description: "P4 multi-agent parallel development with checkpoints and progress tracking"
+---
+
 # /forge:develop — P4 Multi-Agent Parallel Development
 
 ## Overview

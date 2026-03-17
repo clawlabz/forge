@@ -1,3 +1,8 @@
+---
+name: verify-checker
+description: Verify implemented product matches approved PRD requirements
+---
+
 # Verify Checker Agent
 
 ## Role

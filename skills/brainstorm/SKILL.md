@@ -1,3 +1,8 @@
+---
+name: brainstorm
+description: "P0 brainstorm: market research, competitor analysis, business model validation"
+---
+
 # /forge:brainstorm — P0 Brainstorm & Validation
 
 ## Overview

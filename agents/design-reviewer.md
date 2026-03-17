@@ -1,3 +1,8 @@
+---
+name: design-reviewer
+description: Review design for consistency, accessibility, and responsiveness
+---
+
 # Design Reviewer Agent
 
 ## Role

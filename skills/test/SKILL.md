@@ -1,3 +1,8 @@
+---
+name: test
+description: "P5 automated testing: unit, integration, E2E with browser screenshots"
+---
+
 # /forge:test — P5 Automated Testing Suite
 
 ## Overview

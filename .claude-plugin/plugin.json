@@ -1,17 +1,21 @@
 {
   "name": "forge",
   "description": "Automated product manufacturing pipeline from idea to deployment",
-  "version": "0.2.0",
-  "agents": [
-    "./agents/prd-reviewer.md",
-    "./agents/arch-reviewer.md",
-    "./agents/design-reviewer.md",
-    "./agents/verify-checker.md"
-  ],
-  "commands": [
-    "./commands/"
-  ],
-  "skills": [
-    "./skills/"
+  "version": "0.3.0",
+  "author": {
+    "name": "ClawLabz",
+    "url": "https://github.com/clawlabz"
+  },
+  "homepage": "https://github.com/clawlabz/forge",
+  "repository": "https://github.com/clawlabz/forge",
+  "license": "MIT",
+  "keywords": [
+    "forge",
+    "automation",
+    "product",
+    "pipeline",
+    "deployment",
+    "stitch",
+    "design"
   ]
 }

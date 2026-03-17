@@ -1,3 +1,7 @@
+---
+description: Resume an interrupted Forge pipeline from last checkpoint
+---
+
 # /forge:resume — Resume Interrupted Pipeline
 
 Resume a Forge pipeline from the last checkpoint.

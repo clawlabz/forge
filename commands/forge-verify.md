@@ -1,3 +1,7 @@
+---
+description: "P6: Three-round multi-agent verification"
+---
+
 # /forge:verify — P6 Three-Round Verification
 
 Conduct 3 rounds of multi-agent verification with parallel fixes.
