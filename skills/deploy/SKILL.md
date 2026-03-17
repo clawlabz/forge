@@ -335,10 +335,29 @@ The product is live and ready for users.
 - `ga4-clarity-auto-integration` skill — analytics setup (optional)
 - `browser-use` — health check screenshots + smoke test
 
-## Important
+## CRITICAL RULES
 
+- **NEVER output a "待办" or "TODO" list for the user** — execute ALL deployment steps automatically
+- **NEVER ask the user to manually run commands** — you have all the scripts and tools needed
+- **NEVER say "手动部署" or "manual deployment"** — everything is automated
+- If a step fails, retry once, then try an alternative approach, only inform user if truly blocked
 - NEVER deploy if P6 verification has outstanding CRITICAL issues
 - ALWAYS verify health check passes before declaring success
 - ALWAYS generate knowledge base (unless explicitly disabled)
 - If deployment fails, attempt rollback and inform user
 - Environment variables with secrets go to Vercel env vars, NEVER to git
+
+## Automated Deployment Tools
+
+You MUST use these tools directly — do NOT list them as manual steps:
+
+| Task | Tool | Command |
+|------|------|---------|
+| Database migration | `scripts/supabase-migrate.sh` | `./scripts/supabase-migrate.sh <sql-file>` |
+| Vercel deploy + domain | `scripts/vercel-deploy.sh` | `./scripts/vercel-deploy.sh <project-dir> <subdomain>` |
+| DNS CNAME record | `scripts/cloudflare-dns.sh` | `./scripts/cloudflare-dns.sh add <subdomain> cname.vercel-dns.com` |
+| R2 bucket creation | Cloudflare API or `wrangler` | `wrangler r2 bucket create <name>` or API call |
+| Stripe product creation | `stripe` CLI or API | `stripe products create` / `stripe prices create` |
+| Env vars to Vercel | `vercel env add` | Loop through all required env vars |
+
+If scripts are not available in the project, use the equivalent CLI commands or API calls directly.
