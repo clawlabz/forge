@@ -105,13 +105,46 @@ Record the `projectId` for subsequent calls.
 
 ### Step 4: Generate Screens via Stitch
 
-For EACH page in the design brief, call Stitch MCP with a carefully crafted prompt:
+**Generation strategy: Homepage first, then derive.**
+
+**Step 4a: Generate Homepage first (establishes the design style)**
 
 ```
 Tool: generate_screen_from_text
 Input: {
   "projectId": "<project-id>",
-  "prompt": "<detailed page prompt>"
+  "prompt": "<homepage prompt>",
+  "deviceType": "DESKTOP",
+  "modelId": "GEMINI_3_PRO"
+}
+```
+
+Wait for homepage to complete. This establishes the visual language (colors, fonts, spacing, component styles) for the entire project.
+
+**Step 4b: Generate remaining pages, referencing the established style**
+
+For each subsequent page, add this line to the prompt:
+`"Maintain the same visual style, colors, and typography as the other screens in this project."`
+
+```
+Tool: generate_screen_from_text
+Input: {
+  "projectId": "<project-id>",
+  "prompt": "<page prompt>\n\nMaintain the same visual style, colors, and typography as the other screens in this project.",
+  "deviceType": "DESKTOP",
+  "modelId": "GEMINI_3_PRO"
+}
+```
+
+**Step 4c: Consistency check — if any page looks off, use edit_screens:**
+
+```
+Tool: edit_screens
+Input: {
+  "projectId": "<project-id>",
+  "selectedScreenIds": ["<inconsistent-screen-id>"],
+  "prompt": "Adjust this screen to match the visual style of the other screens in the project.",
+  "modelId": "GEMINI_3_PRO"
 }
 ```
 

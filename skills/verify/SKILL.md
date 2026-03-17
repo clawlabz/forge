@@ -9,6 +9,17 @@ description: "P6 three-round multi-agent verification with parallel fixes"
 
 Conduct 3 rounds of comprehensive, multi-perspective verification. Each round: parallel agents audit different dimensions → generate fix list → parallel agents fix issues → verify fixes. Goal: drive issues to zero.
 
+## HARD RULE: Exactly 3 Rounds
+
+You MUST run exactly 3 verification rounds. NEVER skip rounds. NEVER combine rounds. NEVER say "clean" after 1 round and stop.
+
+Each round MUST:
+1. Actually audit the code (not just say "looks good")
+2. Produce a written report (`docs/forge/P6-verify-round-{1,2,3}.md`)
+3. Fix any issues found before moving to next round
+
+If you only run 1 round, the pipeline is INCOMPLETE.
+
 ## Usage
 
 ```
@@ -191,7 +202,9 @@ P6_verify:
 
 ## Important
 
-- ALL 3 rounds are mandatory — even if Round 1 finds zero issues
+- ALL 3 rounds are MANDATORY — even if Round 1 finds zero issues, you MUST still run Round 2 and Round 3
+- NEVER stop after 1 round — this is the #1 compliance failure
+- Each round MUST produce a report file: `docs/forge/P6-verify-round-{1,2,3}.md`
 - CRITICAL issues MUST be fixed before proceeding to next round
 - Each round should find fewer issues than the previous (convergence)
 - If Round 3 still has CRITICAL/HIGH issues → run additional rounds until resolved
