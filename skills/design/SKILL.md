@@ -11,6 +11,16 @@ Generate production-quality UI designs using Google Stitch MCP, then export HTML
 
 This phase runs in parallel with P2 (Architect).
 
+## CRITICAL: MCP Permission Constraint
+
+**Stitch MCP tools CANNOT be called from sub-agents** (Claude Code security restriction). ALL Stitch MCP calls MUST be executed directly in the main conversation:
+- `create_project` — main conversation
+- `generate_screen_from_text` — main conversation
+- `get_screen_code` — main conversation
+- `get_screen_image` — main conversation
+
+Do NOT delegate any Stitch MCP call to an Agent. The orchestrator (`/forge:build`) must execute P3 Design inline, not as a parallel agent.
+
 ## Usage
 
 ```

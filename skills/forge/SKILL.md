@@ -46,13 +46,16 @@ INPUT: idea string
 │  └─ On approval → update state, continue
 │  └─ On rejection → re-run with feedback
 │
-├─ Step 4: P2 + P3 in Parallel
-│  ├─ Launch /forge:architect (P2) as Agent
-│  └─ Launch /forge:design (P3) as Agent
-│  └─ Both complete → both push to GitHub
+├─ Step 4: P2 Architect (can use Agent)
+│  └─ Launch /forge:architect as Agent (sub-agents OK, no MCP needed)
 │  └─ 🔴 APPROVAL GATE (P2): output architecture link, wait
+│  └─ On approval → continue
+│
+├─ Step 4b: P3 Design (MUST run in main conversation)
+│  └─ Execute /forge:design DIRECTLY (NOT as Agent — Stitch MCP requires main conversation)
+│  └─ Call Stitch MCP tools inline: create_project, generate_screen_from_text, etc.
 │  └─ 🔴 APPROVAL GATE (P3): output design link, wait
-│  └─ Both approved → continue
+│  └─ On approval → continue
 │
 ├─ Step 5: P4 Develop
 │  └─ Invoke /forge:develop
@@ -119,12 +122,11 @@ If any phase fails:
 
 ## Parallel Execution
 
-P2 and P3 are launched as parallel Agents:
-```
-Use the Agent tool to launch two agents simultaneously:
-- Agent 1: /forge:architect (P2)
-- Agent 2: /forge:design (P3)
-```
+**P2 Architect**: CAN be launched as a sub-agent (no MCP tools needed).
+
+**P3 Design**: MUST run in the main conversation (Stitch MCP requires main conversation permissions). Do NOT launch P3 as a sub-agent.
+
+**P2 and P3 are sequential**, not parallel, due to this MCP constraint. P2 runs first (as agent), then P3 runs inline.
 
 In P4, independent development tasks within the same phase are parallelized via multiple Agent invocations.
 

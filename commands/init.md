@@ -9,9 +9,9 @@ Initialize a new project with Forge pipeline structure, configuration, and state
 ## Usage
 
 ```
-/forge:init                        # Interactive setup
-/forge:init --preset claw          # Use ClawLabz preset
-/forge:init --preset generic       # Use generic preset
+/forge:init                    # Interactive setup
+/forge:init --preset claw      # Use ClawLabz preset
+/forge:init --preset generic   # Use generic preset
 ```
 
 ## How It Works
